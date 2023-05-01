@@ -1,16 +1,15 @@
 import { promises, constants } from 'fs'
-import { homedir } from 'os'
-import { join } from 'path'
-
-const FOLDER_PATH = join(homedir(), 'weatherCli')
-const FILE_PATH = join(FOLDER_PATH, 'config.json')
+import { STORAGE_FILE_PATH, STORAGE_FOLDER_PATH } from '../constants/index.js'
 
 export const saveKeyValue = async (jsonKey: string, value: unknown) => {
   let jsonData = { [jsonKey]: value }
-  const [jsonIsExist, folderIsExist] = await Promise.all([fileIsExist(FILE_PATH), fileIsExist(FOLDER_PATH)])
+  const [jsonIsExist, folderIsExist] = await Promise.all([
+    fileIsExist(STORAGE_FILE_PATH),
+    fileIsExist(STORAGE_FOLDER_PATH),
+  ])
 
   if (jsonIsExist) {
-    const file = await promises.readFile(FILE_PATH, {
+    const file = await promises.readFile(STORAGE_FILE_PATH, {
       encoding: 'utf-8',
     })
 
@@ -19,10 +18,21 @@ export const saveKeyValue = async (jsonKey: string, value: unknown) => {
   }
 
   if (!folderIsExist) {
-    await promises.mkdir(FOLDER_PATH)
+    await promises.mkdir(STORAGE_FOLDER_PATH)
   }
 
-  await promises.writeFile(FILE_PATH, JSON.stringify(jsonData))
+  await promises.writeFile(STORAGE_FILE_PATH, JSON.stringify(jsonData))
+}
+
+export const getValueByKey = async (jsonKey: string) => {
+  const jsonIsExist = await fileIsExist(STORAGE_FILE_PATH)
+  if (!jsonIsExist) return undefined
+
+  const file = await promises.readFile(STORAGE_FILE_PATH, {
+    encoding: 'utf-8',
+  })
+
+  return JSON.parse(file)[jsonKey]
 }
 
 const fileIsExist = async (path: string) => {
