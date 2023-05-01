@@ -51,3 +51,7 @@ interface ISys {
   sunrise: number
   sunset: number
 }
+export interface IResWeatherError {
+  cod: number
+  message: string
+}
