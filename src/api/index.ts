@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getValueByKey } from '../services/storage.service.js'
 import { printError } from '../services/log.service.js'
-import { IWeatherData } from './types.js'
+import { IResWeatherError, IWeatherData } from './types.js'
 import { ApiEndPoint, STORAGE_FILE_PATH, StorageKey } from '../constants/index.js'
 
 const axiosInstance = axios.create({
@@ -25,7 +25,7 @@ export class Api {
       })
       console.log('POGODA', data)
     } catch (error) {
-      if (axios.isAxiosError<{ cod: number; message: string }>(error)) {
+      if (axios.isAxiosError<IResWeatherError>(error)) {
         printError(error.response?.data.message ?? 'Ошибка при получении данных с сервера')
       } else {
         printError(`Ошибка при извлечении данных из конфигурационного файла, проверьте ${STORAGE_FILE_PATH}`)

@@ -5,6 +5,7 @@ export const enum ApiEndPoint {
   BaseURL = 'http://api.openweathermap.org',
   WeatherByDay = 'data/2.5/weather',
 }
+
 export const enum StorageKey {
   ApiKey = 'api-key',
   City = 'city',
